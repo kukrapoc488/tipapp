@@ -17,7 +17,7 @@ export default async function WaiterProfile({ params }: { params: Promise<{ user
     )
   }
 
-  const initials = waiter.full_name.split(' ').map(n => n[0]).join('')
+  const initials = waiter.full_name.split(' ').map((n: string) => n[0]).join('')
 
   return (
     <main style={{
