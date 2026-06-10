@@ -1,8 +1,7 @@
 import { supabase } from '../../lib/supabase'
 import TipForm from './TipForm'
 
-export default async function WaiterProfile({ params }) {
-  const { username } = await params
+export default async function WaiterProfile({ params }: { params: Promise<{ username: string }> }) {  const { username } = await params
 
   const { data: waiter } = await supabase
     .from('waiters')
