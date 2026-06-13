@@ -91,7 +91,7 @@ export default async function WaiterProfile({ params }: { params: Promise<{ user
 
         <div style={{ height: '1px', background: '#f0f0f0', margin: '0 0 24px' }} />
 
-        <TipForm waiterName={waiter.full_name.split(' ')[0]} />
+        <TipForm waiterName={waiter.full_name.split(' ')[0]} username={waiter.username} />
 
       </div>
     </main>

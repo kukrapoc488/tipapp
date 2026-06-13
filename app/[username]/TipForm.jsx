@@ -59,7 +59,7 @@ function CheckoutForm({ amount, waiterName }) {
   )
 }
 
-export default function TipForm({ waiterName }) {
+export default function TipForm({ waiterName, username }) {
   const [amount, setAmount] = useState(5)
   const [customAmount, setCustomAmount] = useState('')
   const [clientSecret, setClientSecret] = useState(null)
@@ -98,7 +98,7 @@ export default function TipForm({ waiterName }) {
     const res = await fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: selectedAmount })
+      body: JSON.stringify({ amount: selectedAmount, username })
     })
     const data = await res.json()
     setClientSecret(data.clientSecret)
