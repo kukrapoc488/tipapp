@@ -11,10 +11,10 @@ export async function POST(request) {
   try {
     const { amount, username } = await request.json()
 
-    // Get the waiter's Stripe account ID
+    // Get the waiter
     const { data: waiter } = await supabase
       .from('waiters')
-      .select('stripe_account_id')
+      .select('id, stripe_account_id')
       .eq('username', username)
       .single()
 
@@ -22,12 +22,18 @@ export async function POST(request) {
       return Response.json({ error: 'Waiter not set up for payments yet' }, { status: 400 })
     }
 
+    // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
       currency: 'eur',
       transfer_data: {
         destination: waiter.stripe_account_id,
       },
+      metadata: {
+        waiter_id: waiter.id,
+        username,
+        amount,
+      }
     })
 
     return Response.json({ clientSecret: paymentIntent.client_secret })
