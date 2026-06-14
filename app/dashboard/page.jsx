@@ -7,6 +7,7 @@ import { QRCodeSVG } from 'qrcode.react'
 export default function Dashboard() {
   const [waiter, setWaiter] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [tips, setTips] = useState([])
 
   useEffect(() => {
     const getWaiter = async () => {
@@ -20,7 +21,16 @@ export default function Dashboard() {
         .select('*')
         .eq('user_id', user.id)
         .single()
+
+      const { data: tipsData } = await supabase
+        .from('tips')
+        .select('*')
+        .eq('waiter_id', data.id)
+        .order('created_at', { ascending: false })
+        .limit(10)
+
       setWaiter(data)
+      setTips(tipsData || [])
       setLoading(false)
     }
     getWaiter()
@@ -112,6 +122,34 @@ export default function Dashboard() {
             view
           </a>
         </div>
+
+        <div style={{ background: '#fff', borderRadius: '16px', padding: '20px', boxShadow: '0 2px 40px rgba(0,0,0,0.06)', marginTop: '16px' }}>
+          <p style={{ fontSize: '12px', color: '#999', fontFamily: 'system-ui, sans-serif', marginBottom: '16px', letterSpacing: '0.05em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+            recent tips
+          </p>
+          {tips.length === 0 ? (
+            <p style={{ fontSize: '13px', color: '#bbb', fontFamily: 'system-ui, sans-serif', textAlign: 'center', padding: '16px 0' }}>
+              no tips yet — share your QR code!
+            </p>
+          ) : (
+            tips.map((tip) => (
+              <div key={tip.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #f0f0f0' }}>
+                <div>
+                  <p style={{ fontSize: '13px', color: '#1a1a1a', fontFamily: 'system-ui, sans-serif', margin: '0 0 2px' }}>
+                    anonymous guest
+                  </p>
+                  <p style={{ fontSize: '11px', color: '#bbb', fontFamily: 'system-ui, sans-serif', margin: 0 }}>
+                    {new Date(tip.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <p style={{ fontSize: '15px', fontWeight: '500', color: '#1D9E75', fontFamily: 'system-ui, sans-serif', margin: 0 }}>
+                  +€{tip.amount}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+
       </div>
     </main>
   )
