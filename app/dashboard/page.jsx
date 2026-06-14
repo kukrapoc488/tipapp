@@ -61,6 +61,26 @@ export default function Dashboard() {
             {initials}
           </div>
         </div>
+
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut()
+            window.location.href = '/login'
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#999',
+            fontSize: '12px',
+            fontFamily: 'system-ui, sans-serif',
+            cursor: 'pointer',
+            marginBottom: '16px',
+            padding: 0
+          }}
+        >
+          log out
+        </button>
+
         <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', textAlign: 'center', boxShadow: '0 2px 40px rgba(0,0,0,0.06)', marginBottom: '16px' }}>
           <p style={{ fontSize: '12px', color: '#999', fontFamily: 'system-ui, sans-serif', marginBottom: '20px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             your tip QR code
