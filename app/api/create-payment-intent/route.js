@@ -23,12 +23,16 @@ export async function POST(request) {
     }
 
     // Create payment intent
+    const platformFeePercent = 0.03
+    const platformFee = Math.round(amount * 100 * platformFeePercent)
+    
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
       currency: 'eur',
       transfer_data: {
         destination: waiter.stripe_account_id,
       },
+      application_fee_amount: platformFee,
       metadata: {
         waiter_id: waiter.id,
         username,
