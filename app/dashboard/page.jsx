@@ -90,7 +90,24 @@ export default function Dashboard() {
         >
           log out
         </button>
-
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+          <div style={{ flex: 1, background: '#fff', borderRadius: '16px', padding: '16px 20px', boxShadow: '0 2px 40px rgba(0,0,0,0.06)' }}>
+            <p style={{ fontSize: '22px', fontWeight: '500', color: '#1D9E75', margin: '0 0 2px' }}>
+              €{tips.reduce((sum, t) => sum + t.amount, 0)}
+            </p>
+            <p style={{ fontSize: '11px', color: '#999', fontFamily: 'system-ui, sans-serif', margin: 0 }}>
+              total earned
+            </p>
+          </div>
+          <div style={{ flex: 1, background: '#fff', borderRadius: '16px', padding: '16px 20px', boxShadow: '0 2px 40px rgba(0,0,0,0.06)' }}>
+            <p style={{ fontSize: '22px', fontWeight: '500', color: '#1a1a1a', margin: '0 0 2px' }}>
+              {tips.length}
+            </p>
+            <p style={{ fontSize: '11px', color: '#999', fontFamily: 'system-ui, sans-serif', margin: 0 }}>
+              total tips
+            </p>
+          </div>
+        </div>
         <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', textAlign: 'center', boxShadow: '0 2px 40px rgba(0,0,0,0.06)', marginBottom: '16px' }}>
           <p style={{ fontSize: '12px', color: '#999', fontFamily: 'system-ui, sans-serif', marginBottom: '20px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             your tip QR code
