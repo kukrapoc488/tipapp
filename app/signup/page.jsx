@@ -12,23 +12,59 @@ export default function SignUp() {
   const [bio, setBio] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [usernameStatus, setUsernameStatus] = useState('')
+  const [loadingStep, setLoadingStep] = useState('')
   const [step, setStep] = useState(1)
 
+  const checkUsername = async (value) => {
+    setUsername(value)
+
+    if (!value) {
+      setUsernameStatus('')
+      return
+    }
+
+    setUsernameStatus('checking')
+
+    const { data } = await supabase
+      .from('waiters')
+      .select('username')
+      .eq('username', value)
+      .maybeSingle()
+
+    setUsernameStatus(data ? 'taken' : 'available')
+  }
+
   const handleSignUp = async () => {
+    if (!name || !username || !restaurant || !email || !password) {
+      setError('please fill in all required fields')
+      return
+    }
+
+    if (usernameStatus === 'taken') {
+      setError('please choose a different username')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('password must be at least 6 characters')
+      return
+    }
+
     setLoading(true)
     setError('')
+    setLoadingStep('creating your account...')
 
-    // Create auth account
     const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
     })
-
     if (authError) {
       setError(authError.message)
       setLoading(false)
       return
     }
+    setLoadingStep('setting up your profile...')
 
     // Create waiter profile
     const { error: profileError } = await supabase
@@ -47,6 +83,8 @@ export default function SignUp() {
       return
     }
 
+    setLoadingStep('connecting your bank account...')
+
     // Connect Stripe account
     const res = await fetch('/api/create-connect-account', {
       method: 'POST',
@@ -61,16 +99,14 @@ export default function SignUp() {
       return
     }
 
-// Save Stripe account ID
-const { error: updateError } = await supabase
-  .from('waiters')
-  .update({ stripe_account_id: stripeData.accountId })
-  .eq('username', username)
+    const { error: updateError } = await supabase
+      .from('waiters')
+      .update({ stripe_account_id: stripeData.accountId })
+      .eq('username', username)
 
-console.log('Stripe account ID saved:', stripeData.accountId, 'Error:', updateError)
+    console.log('Stripe account ID saved:', stripeData.accountId, 'Error:', updateError)
 
-// Redirect to Stripe onboarding
-window.location.href = stripeData.url
+    window.location.href = stripeData.url
   }
 
   const inputStyle = {
@@ -122,9 +158,24 @@ window.location.href = stripeData.url
           type="text"
           placeholder="username (e.g. marco)"
           value={username}
-          onChange={e => setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
+          onChange={e => checkUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
           style={inputStyle}
         />
+        {usernameStatus === 'checking' && (
+          <p style={{ fontSize: '11px', color: '#999', fontFamily: 'system-ui, sans-serif', margin: '-4px 0 10px' }}>
+            checking...
+          </p>
+        )}
+        {usernameStatus === 'taken' && (
+          <p style={{ fontSize: '11px', color: 'red', fontFamily: 'system-ui, sans-serif', margin: '-4px 0 10px' }}>
+            username already taken
+          </p>
+        )}
+        {usernameStatus === 'available' && (
+          <p style={{ fontSize: '11px', color: '#1D9E75', fontFamily: 'system-ui, sans-serif', margin: '-4px 0 10px' }}>
+            ✓ available
+          </p>
+        )}
         <input
           type="text"
           placeholder="restaurant name"
@@ -177,7 +228,7 @@ window.location.href = stripeData.url
             marginBottom: '10px'
           }}
         >
-          {loading ? 'setting up...' : 'create profile →'}
+          {loading ? loadingStep : 'create profile →'}
         </button>
 
         <p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
