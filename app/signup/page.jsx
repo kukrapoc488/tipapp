@@ -83,7 +83,7 @@ export default function SignUp() {
       return
     }
 
-    setLoadingStep('connecting your bank account...')
+    setLoadingStep('almost there...')
 
     // Connect Stripe account
     const res = await fetch('/api/create-connect-account', {
@@ -149,14 +149,14 @@ export default function SignUp() {
 
         <input
           type="text"
-          placeholder="full name"
+          placeholder="full name *"
           value={name}
           onChange={e => setName(e.target.value)}
           style={inputStyle}
         />
         <input
           type="text"
-          placeholder="username (e.g. marco)"
+          placeholder="username (e.g. marco) *"
           value={username}
           onChange={e => checkUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
           style={inputStyle}
@@ -178,7 +178,7 @@ export default function SignUp() {
         )}
         <input
           type="text"
-          placeholder="restaurant name"
+          placeholder="restaurant name *"
           value={restaurant}
           onChange={e => setRestaurant(e.target.value)}
           style={inputStyle}
@@ -210,7 +210,10 @@ export default function SignUp() {
             {error}
           </p>
         )}
-
+<p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
+          you'll be taken to Stripe to connect your bank account
+        </p>
+        
         <button
           onClick={handleSignUp}
           disabled={loading}
