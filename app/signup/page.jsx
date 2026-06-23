@@ -210,10 +210,10 @@ export default function SignUp() {
             {error}
           </p>
         )}
-<p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
-          you'll be taken to Stripe to connect your bank account
-        </p>
-        
+<p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', fontFamily: 'system-ui, sans-serif', marginBottom: '20px' }}>
+  after this you'll securely connect your bank account via Stripe to receive tips
+</p>
+
         <button
           onClick={handleSignUp}
           disabled={loading}
@@ -234,9 +234,7 @@ export default function SignUp() {
           {loading ? loadingStep : 'create profile →'}
         </button>
 
-        <p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
-          you'll be taken to Stripe to connect your bank account
-        </p>
+
       </div>
     </main>
   )
