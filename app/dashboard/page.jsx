@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeCanvas } from 'qrcode.react'
 
 export default function Dashboard() {
   const [waiter, setWaiter] = useState(null)
@@ -35,6 +35,17 @@ export default function Dashboard() {
     }
     getWaiter()
   }, [])
+
+  const downloadQR = () => {
+    const canvas = document.getElementById('qr-code-canvas')
+    if (!canvas) return
+
+    const url = canvas.toDataURL('image/png')
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${waiter.username}-tip-qr.png`
+    link.click()
+  }
 
   if (loading) {
     return (
@@ -113,16 +124,32 @@ export default function Dashboard() {
             your tip QR code
           </p>
           <div style={{ display: 'inline-block', padding: '16px', background: '#fff', borderRadius: '12px', border: '1.5px solid #f0f0f0' }}>
-            <QRCodeSVG value={profileUrl} size={160} />
+            <QRCodeCanvas id="qr-code-canvas" value={profileUrl} size={160} />
           </div>
           <p style={{ fontSize: '12px', color: '#999', fontFamily: 'system-ui, sans-serif', marginTop: '16px', marginBottom: '4px' }}>
             {profileUrl}
           </p>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '8px' }}>
+            <button
+              onClick={() => navigator.clipboard.writeText(profileUrl)}
+              style={{ background: '#F7F5F0', border: 'none', borderRadius: '8px', color: '#333', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', padding: '8px 14px' }}
+            >
+              copy link
+            </button>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent('Tip me directly here: ' + profileUrl)}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ background: '#25D366', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', padding: '8px 14px', textDecoration: 'none' }}
+            >
+              share on WhatsApp
+            </a>
+          </div>
           <button
-            onClick={() => navigator.clipboard.writeText(profileUrl)}
-            style={{ background: 'none', border: 'none', color: '#1D9E75', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', padding: '4px 0' }}
+            onClick={downloadQR}
+            style={{ display: 'block', margin: '10px auto 0', background: 'none', border: 'none', color: '#999', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', textDecoration: 'underline' }}
           >
-            copy link
+            download QR code
           </button>
         </div>
         <div style={{ background: '#fff', borderRadius: '16px', padding: '16px 20px', boxShadow: '0 2px 40px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
