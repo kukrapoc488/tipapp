@@ -8,6 +8,8 @@ export default function Dashboard() {
   const [waiter, setWaiter] = useState(null)
   const [loading, setLoading] = useState(true)
   const [tips, setTips] = useState([])
+  const [copied, setCopied] = useState(false)
+
 
   useEffect(() => {
     const getWaiter = async () => {
@@ -37,7 +39,7 @@ export default function Dashboard() {
   }, [])
 
   const downloadQR = () => {
-    const canvas = document.getElementById('qr-code-canvas')
+    const canvas = document.querySelector('#qr-code-canvas')
     if (!canvas) return
 
     const url = canvas.toDataURL('image/png')
@@ -124,18 +126,22 @@ export default function Dashboard() {
             your tip QR code
           </p>
           <div style={{ display: 'inline-block', padding: '16px', background: '#fff', borderRadius: '12px', border: '1.5px solid #f0f0f0' }}>
-            <QRCodeCanvas id="qr-code-canvas" value={profileUrl} size={160} />
-          </div>
+  <QRCodeCanvas id="qr-code-canvas" value={profileUrl} size={600} style={{ width: '160px', height: '160px' }} />
+</div>
           <p style={{ fontSize: '12px', color: '#999', fontFamily: 'system-ui, sans-serif', marginTop: '16px', marginBottom: '4px' }}>
             {profileUrl}
           </p>
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '8px' }}>
-            <button
-              onClick={() => navigator.clipboard.writeText(profileUrl)}
-              style={{ background: '#F7F5F0', border: 'none', borderRadius: '8px', color: '#333', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', padding: '8px 14px' }}
-            >
-              copy link
-            </button>
+          <button
+  onClick={() => {
+    navigator.clipboard.writeText(profileUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }}
+  style={{ background: copied ? '#1D9E75' : '#F7F5F0', border: 'none', borderRadius: '8px', color: copied ? '#fff' : '#333', fontSize: '12px', fontFamily: 'system-ui, sans-serif', cursor: 'pointer', padding: '8px 14px' }}
+>
+  {copied ? 'copied!' : 'copy link'}
+</button>
             <a
               href={`https://wa.me/?text=${encodeURIComponent('Tip me directly here: ' + profileUrl)}`}
               target="_blank"
