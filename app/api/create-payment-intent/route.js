@@ -38,7 +38,6 @@ export async function POST(request) {
       currency: 'eur',
       transfer_data: {
         destination: waiter.stripe_account_id,
-        amount: tipAmountCents,
       },
       application_fee_amount: totalFeeCents,
       metadata: {
