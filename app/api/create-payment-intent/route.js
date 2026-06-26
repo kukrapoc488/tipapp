@@ -24,15 +24,23 @@ export async function POST(request) {
 
     // Create payment intent
     const platformFeePercent = 0.03
-    const platformFee = Math.round(amount * 100 * platformFeePercent)
+    const stripePercentFee = 0.015
+    const stripeFixedFeeCents = 25
+    
+    const tipAmountCents = amount * 100
+    const platformFeeCents = Math.round(tipAmountCents * platformFeePercent)
+    const estimatedStripeFeeCents = Math.round(tipAmountCents * stripePercentFee) + stripeFixedFeeCents
+    const totalFeeCents = platformFeeCents + estimatedStripeFeeCents
+    const totalChargeCents = tipAmountCents + totalFeeCents
     
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
+      amount: totalChargeCents,
       currency: 'eur',
       transfer_data: {
         destination: waiter.stripe_account_id,
+        amount: tipAmountCents,
       },
-      application_fee_amount: platformFee,
+      application_fee_amount: totalFeeCents,
       metadata: {
         waiter_id: waiter.id,
         username,
@@ -40,7 +48,7 @@ export async function POST(request) {
       }
     })
 
-    return Response.json({ clientSecret: paymentIntent.client_secret })
+    return Response.json({ clientSecret: paymentIntent.client_secret, totalCharge: totalChargeCents / 100 })
   } catch (error) {
     console.error('Payment intent error:', error.message)
     return Response.json({ error: error.message }, { status: 500 })

@@ -7,7 +7,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
-function CheckoutForm({ amount, waiterName }) {
+function CheckoutForm({ amount, totalCharge, waiterName }) {
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -33,6 +33,20 @@ function CheckoutForm({ amount, waiterName }) {
 
   return (
     <div>
+      <div style={{ background: '#F7F5F0', borderRadius: '10px', padding: '12px 14px', marginBottom: '14px', fontFamily: 'system-ui, sans-serif' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999', marginBottom: '4px' }}>
+          <span>tip for {waiterName}</span>
+          <span>€{amount.toFixed(2)}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#999', marginBottom: '8px' }}>
+          <span>service fee</span>
+          <span>€{(totalCharge - amount).toFixed(2)}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#1a1a1a', fontWeight: '500', paddingTop: '8px', borderTop: '1px solid #e8e8e8' }}>
+          <span>total</span>
+          <span>€{totalCharge.toFixed(2)}</span>
+        </div>
+      </div>
       <PaymentElement />
       <button
         onClick={handleSubmit}
@@ -52,7 +66,7 @@ function CheckoutForm({ amount, waiterName }) {
           marginBottom: '10px'
         }}
       >
-        {loading ? 'processing...' : `send €${amount} tip →`}
+        {loading ? 'processing...' : `pay €${totalCharge.toFixed(2)} →`}
       </button>
       {message && <p style={{ color: 'red', fontSize: '13px', textAlign: 'center' }}>{message}</p>}
     </div>
@@ -63,6 +77,7 @@ export default function TipForm({ waiterName, username }) {
   const [amount, setAmount] = useState(5)
   const [customAmount, setCustomAmount] = useState('')
   const [clientSecret, setClientSecret] = useState(null)
+  const [totalCharge, setTotalCharge] = useState(null)
   const [step, setStep] = useState('select')
   const searchParams = useSearchParams()
   const success = searchParams.get('success')
@@ -102,14 +117,15 @@ export default function TipForm({ waiterName, username }) {
     })
     const data = await res.json()
     setClientSecret(data.clientSecret)
+    setTotalCharge(data.totalCharge)
     setStep('pay')
   }
 
   if (step === 'pay' && clientSecret) {
     return (
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <CheckoutForm amount={selectedAmount} waiterName={waiterName} />
-      </Elements>
+  <CheckoutForm amount={selectedAmount} totalCharge={totalCharge} waiterName={waiterName} />
+</Elements>
     )
   }
 
