@@ -184,7 +184,7 @@ export default function SignUp() {
           style={inputStyle}
         />
         <textarea
-          placeholder="short bio (optional)"
+          placeholder="a few words about you (optional)"
           value={bio}
           onChange={e => setBio(e.target.value)}
           rows={3}
