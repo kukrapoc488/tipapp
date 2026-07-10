@@ -69,7 +69,7 @@ const Logo = ({ size = 32 }) => (
 )
 
 export default function Home() {
-  const [lang, setLang] = useState('en')
+  const [lang, setLang] = useState<'en' | 'pt'>('en')
   const t = content[lang]
 
   return (
