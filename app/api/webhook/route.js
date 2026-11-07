@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
 export async function POST(request) {
@@ -23,12 +23,17 @@ export async function POST(request) {
     const paymentIntent = event.data.object
     const { waiter_id, amount } = paymentIntent.metadata
 
-    await supabase.from('tips').insert({
+    const { error: insertError } = await supabase.from('tips').insert({
       waiter_id: parseInt(waiter_id),
       amount: parseInt(amount),
       currency: 'eur',
       stripe_payment_intent_id: paymentIntent.id,
     })
+
+    if (insertError) {
+      console.error('Tip insert failed:', insertError.message)
+      return Response.json({ error: 'insert failed' }, { status: 500 })
+    }
   }
 
   return Response.json({ received: true })
