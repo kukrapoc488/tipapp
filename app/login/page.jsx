@@ -82,6 +82,10 @@ export default function Login() {
             {error}
           </p>
         )}
+<p style={{ textAlign: 'right', margin: '-4px 0 14px', fontSize: '12px', fontFamily: 'system-ui, sans-serif' }}>
+  <a href="/forgot-password" style={{ color: '#1D9E75', textDecoration: 'none' }}>forgot password?</a>
+</p>
+
 
         <button
           onClick={handleLogin}
