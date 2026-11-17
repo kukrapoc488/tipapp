@@ -79,6 +79,7 @@ export default function TipForm({ waiterName, username }) {
   const [clientSecret, setClientSecret] = useState(null)
   const [totalCharge, setTotalCharge] = useState(null)
   const [step, setStep] = useState('select')
+  const [tipError, setTipError] = useState('')
   const searchParams = useSearchParams()
   const success = searchParams.get('success')
 
@@ -109,13 +110,21 @@ export default function TipForm({ waiterName, username }) {
   const selectedAmount = customAmount ? parseInt(customAmount) : amount
 
   const handleTip = async () => {
-    if (!selectedAmount || selectedAmount < 1) return
+    setTipError('')
+    if (!selectedAmount || selectedAmount < 2) {
+      setTipError('minimum tip is €2')
+      return
+    }
     const res = await fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: selectedAmount, username })
     })
     const data = await res.json()
+    if (!res.ok) {
+      setTipError('something went wrong, please try again')
+      return
+    }
     setClientSecret(data.clientSecret)
     setTotalCharge(data.totalCharge)
     setStep('pay')
@@ -136,7 +145,7 @@ export default function TipForm({ waiterName, username }) {
       </p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '12px' }}>
-        {[1, 2, 5, 10].map((amt) => (
+      {[3, 5, 10, 20].map((amt) => (
           <button key={amt} onClick={() => { setAmount(amt); setCustomAmount('') }} style={{
             background: amount === amt && !customAmount ? '#1D9E75' : '#fff',
             color: amount === amt && !customAmount ? '#fff' : '#333',
@@ -171,6 +180,10 @@ export default function TipForm({ waiterName, username }) {
           boxSizing: 'border-box'
         }}
       />
+
+{tipError && (
+  <p style={{ color: 'red', fontSize: '12px', fontFamily: 'system-ui, sans-serif', margin: '0 0 10px' }}>{tipError}</p>
+)}
 
       <button onClick={handleTip} style={{
         width: '100%',

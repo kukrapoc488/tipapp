@@ -11,6 +11,10 @@ export async function POST(request) {
   try {
     const { amount, username } = await request.json()
 
+    if (!Number.isInteger(amount) || amount < 2 || amount > 500) {
+      return Response.json({ error: 'Invalid amount' }, { status: 400 })
+    }
+    
     // Get the waiter
     const { data: waiter } = await supabase
       .from('waiters')
