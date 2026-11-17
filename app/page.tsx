@@ -15,7 +15,7 @@ const content = {
       title: 'how it works',
       steps: [
         { icon: '①', title: 'sign up in 2 minutes', body: 'create your profile with your name, restaurant, and a username. your personal page is live instantly.' },
-        { icon: '②', title: 'connect your bank', body: 'we use Stripe to send money directly to you. secure, fast, and you keep 100% of every tip.' },
+        { icon: '②', title: 'connect your bank', body: 'we use Stripe to send money directly to you. secure, and you keep 100% of every tip. your first payout takes about a week, then it\'s quick.' },
         { icon: '③', title: 'share your QR code', body: 'print it on a badge, text the link, or show your phone. guests tip you in under 20 seconds.' },
       ]
     },
@@ -23,7 +23,7 @@ const content = {
       title: 'why tippn',
       points: [
         { stat: '100%', label: 'of every tip goes to you' },
-        { stat: '0s', label: 'waiting — tips land instantly' },
+        { stat: '0', label: 'restaurants in the middle' },
         { stat: 'no app', label: 'guests need to download' },
       ]
     },
@@ -41,7 +41,7 @@ const content = {
       title: 'como funciona',
       steps: [
         { icon: '①', title: 'regista-te em 2 minutos', body: 'cria o teu perfil com o teu nome, restaurante e username. a tua página fica ativa imediatamente.' },
-        { icon: '②', title: 'liga a tua conta bancária', body: 'usamos o Stripe para te enviar o dinheiro diretamente. seguro, rápido, e ficas com 100% de cada gorjeta.' },
+        { icon: '②', title: 'liga a tua conta bancária', body: 'usamos o Stripe para te enviar o dinheiro diretamente. seguro, e ficas com 100% de cada gorjeta. o primeiro pagamento demora cerca de uma semana, depois é rápido.' },
         { icon: '③', title: 'partilha o teu QR code', body: 'imprime num crachá, envia o link por mensagem ou mostra o telemóvel. os clientes pagam em menos de 20 segundos.' },
       ]
     },
@@ -49,7 +49,7 @@ const content = {
       title: 'porquê o tippn',
       points: [
         { stat: '100%', label: 'de cada gorjeta é teu' },
-        { stat: '0s', label: 'de espera — gorjetas instantâneas' },
+        { stat: '0', label: 'restaurantes pelo meio' },
         { stat: 'sem app', label: 'para os clientes instalarem' },
       ]
     },
