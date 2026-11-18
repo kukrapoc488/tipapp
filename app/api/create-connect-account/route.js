@@ -14,6 +14,11 @@ export async function POST(request) {
         card_payments: { requested: true },
         transfers: { requested: true },
       },
+      settings: {
+        payouts: {
+          schedule: { interval: 'weekly', weekly_anchor: 'monday' },
+        },
+      },
     })
 
     // Create an onboarding link
